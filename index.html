@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GTA 6 Countdown</title>
+<style>
+/* Layout: one centred column. Big countdown on top, facts and shop slot below. */
+:root {
+  color-scheme: dark;
+  --bg: #0c0a12;
+  --panel: #171224;
+  --fg: #f6eefc;
+  --muted: #a99bbd;
+  --accent: #ff3d8b;
+  --accent-2: #2de2e6;
+  --line: #2e2440;
+  --display: "Bebas Neue", "Impact", sans-serif;
+  --body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font: 16px/1.55 var(--body);
+  padding-inline: max(16px, env(safe-area-inset-left, 0px)) max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 40px;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+main { max-width: 820px; margin: 0 auto; display: grid; gap: 48px; }
+.eyebrow {
+  font-size: 13px; letter-spacing: .18em; text-transform: uppercase; color: var(--accent-2);
+  margin: 0;
+}
+h1 {
+  font: 400 clamp(56px, 13vw, 128px)/0.9 var(--display);
+  letter-spacing: .01em; margin: 8px 0 0; text-wrap: balance;
+}
+h1 span { color: var(--accent); }
+.counter {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+}
+.unit {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 6px;
+  padding: 20px 8px; text-align: center; min-width: 0;
+}
+.unit b {
+  display: block; font: 400 clamp(44px, 10vw, 88px)/1 var(--display);
+  font-variant-numeric: tabular-nums; color: var(--fg);
+}
+.unit small {
+  display: block; margin-top: 8px; font-size: 12px; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--muted);
+}
+.launch { color: var(--muted); margin: 0; }
+.launch strong { color: var(--fg); font-weight: 600; }
+#done {
+  display: none; font: 400 clamp(44px, 10vw, 88px)/1 var(--display); color: var(--accent);
+}
+.facts { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+.facts li {
+  border-top: 1px solid var(--line); padding-top: 12px;
+  display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+}
+.facts span:first-child { color: var(--muted); }
+.shop { display: grid; gap: 12px; }
+.shop h2 { font: 400 32px/1 var(--display); margin: 0; letter-spacing: .02em; }
+.shop p { margin: 0; color: var(--muted); }
+.links { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.links a {
+  display: block; padding: 14px 18px; border: 1px solid var(--line); border-radius: 6px;
+  color: var(--fg); text-decoration: none; font-weight: 600;
+}
+.links a:hover, .links a:focus-visible { border-color: var(--accent); color: var(--accent); }
+footer { color: var(--muted); font-size: 13px; }
+@media (prefers-reduced-motion: no-preference) {
+  .unit b { transition: color .2s; }
+}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <p class="eyebrow">Countdown</p>
+    <h1>Grand Theft Auto <span>VI</span></h1>
+  </header>
+
+  <section aria-labelledby="timer-label">
+    <p id="timer-label" class="launch">Time left until launch on <strong>Thursday, 19 November 2026</strong></p>
+    <div class="counter" role="timer" aria-live="off" id="counter">
+      <div class="unit"><b id="d">--</b><small>Days</small></div>
+      <div class="unit"><b id="h">--</b><small>Hours</small></div>
+      <div class="unit"><b id="m">--</b><small>Minutes</small></div>
+      <div class="unit"><b id="s">--</b><small>Seconds</small></div>
+    </div>
+    <div id="done">Out now</div>
+  </section>
+
+  <section>
+    <ul class="facts">
+      <li><span>Platforms</span><span>PlayStation 5, Xbox Series X|S</span></li>
+      <li><span>Release date</span><span>19 November 2026</span></li>
+      <li><span>Release time</span><span>Not yet confirmed by Rockstar</span></li>
+      <li><span>PC</span><span>Not announced</span></li>
+    </ul>
+  </section>
+
+  <section class="shop" aria-labelledby="shop-title">
+    <h2 id="shop-title">Pre-order and gear</h2>
+    <p>Shop the launch.</p>
+    <ul class="links">
+      <li><a href="https://amzn.eu/d/0bpw1nn0" target="_blank" rel="noopener">Shop item 1</a></li>
+      <li><a href="https://amzn.eu/d/06ovQ6gw" target="_blank" rel="noopener">Shop item 2</a></li>
+      <li><a href="https://amzn.eu/d/0fps0Dze" target="_blank" rel="noopener">Shop item 3</a></li>
+    </ul>
+  </section>
+
+  <footer>
+    This is a fan-made countdown and is not affiliated with Rockstar Games or Take-Two Interactive.
+  </footer>
+</main>
+
+<script>
+// Target: midnight at the start of 19 November 2026 in Dhaka time (UTC+06:00).
+// Rockstar has not confirmed an exact launch hour, so change this value if it does.
+var TARGET = new Date("2026-11-19T00:00:00+06:00").getTime();
+
+function pad(n) { return String(n).padStart(2, "0"); }
+
+function tick() {
+  var diff = TARGET - Date.now();
+  if (diff <= 0) {
+    document.getElementById("counter").hidden = true;
+    document.getElementById("done").style.display = "block";
+    clearInterval(timer);
+    return;
+  }
+  var days = Math.floor(diff / 86400000);
+  var hours = Math.floor(diff / 3600000) % 24;
+  var mins = Math.floor(diff / 60000) % 60;
+  var secs = Math.floor(diff / 1000) % 60;
+  document.getElementById("d").textContent = pad(days);
+  document.getElementById("h").textContent = pad(hours);
+  document.getElementById("m").textContent = pad(mins);
+  document.getElementById("s").textContent = pad(secs);
+}
+
+tick();
+var timer = setInterval(tick, 1000);
+</script>
+</body>
+</html>
